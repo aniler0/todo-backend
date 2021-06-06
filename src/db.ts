@@ -1,7 +1,9 @@
+import dotenv from "dotenv";
 import mongoose from "mongoose";
 
-export const dbURI =
-  "mongodb+srv://aniler:anil2000@cluster0.4wjpp.mongodb.net/todo-app?retryWrites=true&w=majority";
+dotenv.config();
+
+export const dbURI: any = process.env.DB_CONNECT;
 mongoose
   .connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then((result) => {

@@ -1,15 +1,12 @@
-import express from "express";
 import { UsersModel } from "../model/userModel";
 
-const router = express.Router();
-
-router.get("/", (req, res) => {
+const getAllUsers = (req: any, res: any) => {
   UsersModel.find()
     .then((result: any) => res.send(result))
     .catch((err: any) => console.log(err));
-});
+};
 
-router.get("/add", (req, res) => {
+const addUser = (req: any, res: any) => {
   const user = new UsersModel({
     name: "Ali veli",
     password: 2124142,
@@ -23,6 +20,6 @@ router.get("/add", (req, res) => {
     .catch((err: any) => {
       console.log(err);
     });
-});
+};
 
-export default router;
+export { getAllUsers, addUser };

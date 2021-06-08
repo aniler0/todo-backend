@@ -1,7 +1,10 @@
 import express from "express";
-import { login, register } from "../controllers/userController";
+import { getPosts, login, register } from "../controllers/userController";
+import { verify } from "./verifyToken";
 
 const router = express.Router();
+
+router.get("/", verify, getPosts);
 
 router.post("/register", register);
 

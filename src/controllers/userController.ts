@@ -4,10 +4,8 @@ import { User } from "../model/userModel";
 import { loginValidation, registerValidation } from "../validation";
 
 //Register controller and user validation
-
 const register = async (req: any, res: any) => {
   //Validate the data before we a user
-
   const { error }: any = registerValidation(req.body);
   if (error) {
     return res.status(400).send(error.details[0].message);
@@ -18,8 +16,8 @@ const register = async (req: any, res: any) => {
   if (emailExist) {
     return res.status(400).send("Email already exist");
   }
-  //Hash passwords
 
+  //Hash passwords
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(req.body.password, salt);
   //create new user
@@ -43,6 +41,7 @@ const login = async (req: any, res: any) => {
   if (error) {
     return res.status(400).send(error.details[0].message);
   }
+
   //checking email if the email exist
   const user = await User.findOne({ email: req.body.email });
   if (!user) {
@@ -50,6 +49,7 @@ const login = async (req: any, res: any) => {
       .status(400)
       .send("Email or password is wrong or email not exist!");
   }
+
   //Password is correct
   const validPass = await bcrypt.compare(req.body.password, user.password);
   if (!validPass) return res.status(400).send("Invalid password");
@@ -60,13 +60,36 @@ const login = async (req: any, res: any) => {
   res.header("auth-token", token).send(token);
 };
 
-const getPosts = (req: any, res: any) => {
-  res.json({
-    posts: {
-      title: "my first post",
-      description: "random data you shouldnt access",
-    },
-  });
+//get tasks
+const getTasks = async (req: any, res: any) => {
+  const userId: string = req.user._id;
+
+  User.findById(userId)
+    .then((data: any) => {
+      if (!data)
+        res.status(404).send({ msg: "Not found user with id " + userId });
+      else res.send(data);
+    })
+    .catch((err: any) =>
+      res.status(500).send({ msg: "Error when getting data" })
+    );
 };
 
-export { register, login, getPosts };
+const newTask = async (req: any, res: any, next: any) => {
+  const userId: string = req.user._id;
+  User.findById(userId)
+    .select("tasks")
+    .exec((err: any, doc: any) => {
+      if (err) res.send(err);
+      if (doc != null) {
+        doc.tasks.push({
+          title: req.body.title,
+          completed: req.body.completed,
+          date: Date.now(),
+        });
+        doc.save();
+      }
+      next();
+    });
+};
+export { register, login, getTasks, newTask };

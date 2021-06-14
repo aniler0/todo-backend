@@ -1,4 +1,7 @@
+import moment from "moment";
 import mongoose from "mongoose";
+
+moment.locale();
 
 const Schema = mongoose.Schema;
 
@@ -14,7 +17,7 @@ const taskSchema = new Schema(
     },
     date: {
       type: Date,
-      default: Date.now,
+      default: moment(),
     },
   },
   { usePushEach: true }

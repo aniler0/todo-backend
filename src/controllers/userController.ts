@@ -61,10 +61,12 @@ const login = async (req: any, res: any) => {
 };
 
 //get tasks
+
 const getTasks = async (req: any, res: any) => {
   const userId: string = req.user._id;
 
-  User.findById(userId)
+  await User.findById(userId)
+    .select("tasks")
     .then((data: any) => {
       if (!data)
         res.status(404).send({ msg: "Not found user with id " + userId });
@@ -77,19 +79,25 @@ const getTasks = async (req: any, res: any) => {
 
 const newTask = async (req: any, res: any, next: any) => {
   const userId: string = req.user._id;
-  User.findById(userId)
+  //------------------------------------
+  await User.findById(userId)
     .select("tasks")
-    .exec((err: any, doc: any) => {
-      if (err) res.send(err);
-      if (doc != null) {
-        doc.tasks.push({
+    .then((data: any) => {
+      if (data) {
+        data.tasks.push({
           title: req.body.title,
           completed: req.body.completed,
-          date: Date.now(),
         });
-        doc.save();
+        data.save(() => {
+          res.send({ msg: "sended" });
+        });
+      } else {
+        res.send({ title: "empty" });
       }
-      next();
+    })
+    .catch((err: any) => {
+      if (err) res.send(err);
     });
 };
+
 export { register, login, getTasks, newTask };

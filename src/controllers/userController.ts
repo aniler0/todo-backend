@@ -100,4 +100,44 @@ const newTask = async (req: any, res: any, next: any) => {
     });
 };
 
-export { register, login, getTasks, newTask };
+const updateTask = async (req: any, res: any) => {
+  const userId: string = req.user._id;
+  const taskId: string = req.params.id;
+  await User.findById(userId)
+    .select("tasks")
+    .then((data: any) => {
+      let updatedData: any;
+      if (!data) res.status(404).send({ msg: "post not found" });
+      else {
+        updatedData = data.tasks.id(taskId);
+        updatedData.completed = req.body.completed;
+        data.save((err: string, doc: any) => {
+          if (err) res.status(500).json(err);
+          else {
+            res.status(200).json(updatedData);
+          }
+        });
+      }
+    });
+};
+const deleteTask = async (req: any, res: any) => {
+  const userId: string = req.user._id;
+  const taskId: string = req.params.id;
+  await User.findById(userId)
+    .select("tasks")
+    .then((data: any) => {
+      let updatedData: any;
+      if (!data) res.status(404).send({ msg: "post not found" });
+      else {
+        updatedData = data.tasks.id(taskId).remove();
+        data.save((err: string, doc: any) => {
+          if (err) res.status(500).json(err);
+          else {
+            res.status(204).json(null);
+          }
+        });
+      }
+    });
+};
+
+export { register, login, getTasks, newTask, updateTask, deleteTask };

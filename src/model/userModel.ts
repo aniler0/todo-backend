@@ -3,6 +3,16 @@ import mongoose from "mongoose";
 
 moment.locale();
 
+export interface IUser extends Document {
+  title: string;
+  completed: boolean;
+  date: string;
+  name: string;
+  email: string;
+  password: string;
+  tasks: any;
+}
+
 const Schema = mongoose.Schema;
 
 const taskSchema = new Schema(
@@ -52,4 +62,4 @@ const userSchema = new Schema(
   { usePushEach: true }
 );
 
-export const User = mongoose.model("users", userSchema);
+export const User = mongoose.model<IUser>("users", userSchema);

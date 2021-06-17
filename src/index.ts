@@ -11,9 +11,7 @@ const PORT = process.env.PORT || 5000;
 //connect to db and open server
 if (dbURI) {
   app.listen(PORT, () =>
-    console.log(
-      `Server is started on http://localhost:${PORT} and database is working !`
-    )
+    console.log(`Server is started and database is working !`)
   );
 }
 

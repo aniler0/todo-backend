@@ -89,7 +89,7 @@ const newTask = async (req: any, res: any, next: any) => {
           completed: req.body.completed,
         });
         data.save(() => {
-          res.send({ msg: "sended" });
+          res.send(data);
         });
       } else {
         res.send({ title: "empty" });

@@ -89,7 +89,11 @@ const newTask = async (req: any, res: any, next: any) => {
           completed: req.body.completed,
         });
         data.save(() => {
-          res.send(data);
+          res.send({
+            id: data.tasks._id,
+            title: data.tasks.title,
+            completed: data.tasks.completed,
+          });
         });
       } else {
         res.send({ title: "empty" });

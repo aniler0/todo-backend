@@ -82,19 +82,14 @@ const newTask = async (req: any, res: any, next: any) => {
   //------------------------------------
   await User.findById(userId)
     .select("tasks")
-    .then((data: any) => {
+    .then(async (data: any) => {
       if (data) {
         data.tasks.push({
           title: req.body.title,
           completed: req.body.completed,
         });
-        data.save(() => {
-          res.send({
-            id: data.tasks._id,
-            title: data.tasks.title,
-            completed: data.tasks.completed,
-          });
-        });
+        const savedTask = data.save();
+        res.json(savedTask);
       } else {
         res.send({ title: "empty" });
       }

@@ -79,7 +79,7 @@ const getTasks = async (req: any, res: any) => {
 
 const newTask = async (req: any, res: any, next: any) => {
   const userId: string = req.user._id;
-  const lastData: any = User.findById(userId).select({ tasks: { $slice: -1 } });
+
   //-----------------------------------
   await User.findById(userId)
     .select("tasks")
@@ -89,11 +89,12 @@ const newTask = async (req: any, res: any, next: any) => {
           title: req.body.title,
           completed: req.body.completed,
         });
-        data.save().then(
-          lastData.exec((err: any, doc: any) => {
-            res.send(doc.tasks);
-          })
-        );
+        data.save((error: any, response: any) => {
+          if (error) res.send(error);
+          else {
+            res.send(response.tasks[response.tasks.length - 1]);
+          }
+        });
       } else {
         res.send({ title: "empty" });
       }

@@ -11,6 +11,7 @@ export interface IUser extends Document {
   email: string;
   password: string;
   tasks: any;
+  score: string;
 }
 
 const Schema = mongoose.Schema;
@@ -56,6 +57,10 @@ const userSchema = new Schema(
     date: {
       type: Date,
       default: Date.now,
+    },
+    score: {
+      type: Number,
+      default: 0,
     },
     tasks: [taskSchema],
   },

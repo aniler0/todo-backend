@@ -28,7 +28,7 @@ const register = async (req: any, res: any) => {
   });
   try {
     const registeredUser = await user.save(); // saving to db with user.save();
-    res.send({ user: user._id }); //sends id of user
+    res.send({ user: user._id, name: user.name }); //sends id of user
   } catch (err) {
     res.status(400).json({ msg: "Register failed" });
   }
@@ -107,18 +107,22 @@ const newTask = async (req: any, res: any, next: any) => {
 const updateTask = async (req: any, res: any) => {
   const userId: string = req.user._id;
   const taskId: string = req.params.id;
+
   await User.findById(userId)
-    .select("tasks")
-    .then((data: any) => {
+    .select("score tasks")
+    .then(async (data: any) => {
       let updatedData: any;
       if (!data) res.status(404).send({ msg: "post not found" });
       else {
         updatedData = data.tasks.id(taskId);
         updatedData.completed = req.body.completed;
+        data.score = data.score + 1;
+
         data.save((err: string, doc: any) => {
           if (err) res.status(500).json(err);
           else {
-            res.status(200).json(updatedData);
+            console.log(doc.score);
+            res.status(200).send({ updatedData, score: data.score });
           }
         });
       }

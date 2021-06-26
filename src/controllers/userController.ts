@@ -57,7 +57,7 @@ const login = async (req: any, res: any) => {
   //Create and assign a token
   const hidingToken: any = process.env.TOKEN_SECRET;
   const token = jwt.sign({ _id: user._id }, hidingToken);
-  res.header("auth-token", token).send(token);
+  res.header("auth-token", token).send({ token: token, name: user.name });
 };
 
 //get tasks

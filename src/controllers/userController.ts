@@ -66,7 +66,7 @@ const getTasks = async (req: any, res: any) => {
   const userId: string = req.user._id;
 
   await User.findById(userId)
-    .select("tasks")
+    .select("score tasks")
     .then((data: any) => {
       if (!data)
         res.status(404).send({ msg: "Not found user with id " + userId });
